@@ -1,5 +1,6 @@
-import React from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { authService } from 'fBase';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface AuthData {
   email: string;
@@ -12,9 +13,19 @@ const Auth: React.FunctionComponent = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<AuthData>();
+  const [newAccount, setNewAccount] = useState(true);
 
-  const onValid: SubmitHandler<AuthData> = (data) => {
-    console.log(data);
+  const onValid = async ({ email, password }: AuthData) => {
+    try {
+      let data;
+      if (newAccount) {
+        data = await authService.createUserWithEmailAndPassword(email, password);
+      } else {
+        await authService.signInWithEmailAndPassword(email, password);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -39,7 +50,7 @@ const Auth: React.FunctionComponent = () => {
           required
         />
         {errors.password?.message}
-        <input type="submit" value="로그인" />
+        <input type="submit" value={newAccount ? '회원가입' : '로그인'} />
       </form>
       <div>
         <button>구글로 로그인하기</button>
