@@ -1,6 +1,7 @@
-import { authService } from 'fBase';
+import { authService, fireBaseInstance } from 'fBase';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { AuthProvider } from 'firebase/auth';
 
 interface AuthData {
   email: string;
@@ -29,6 +30,19 @@ const Auth: React.FunctionComponent = () => {
   };
 
   const toggleAccount = () => setNewAccount((prev) => !prev);
+  const onSocialClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const {
+      currentTarget: { name },
+    } = event;
+    let provider: AuthProvider = undefined!;
+    if (name === 'google') {
+      provider = new fireBaseInstance.auth.GoogleAuthProvider();
+    } else if (name === 'github') {
+      provider = new fireBaseInstance.auth.GithubAuthProvider();
+    }
+    const data = await authService.signInWithPopup(provider);
+    console.log(data);
+  };
 
   return (
     <div>
@@ -56,8 +70,12 @@ const Auth: React.FunctionComponent = () => {
       </form>
       <span onClick={toggleAccount}>{newAccount ? 'Sign in' : 'Sign Up'}</span>
       <div>
-        <button>구글로 로그인하기</button>
-        <button>깃허브로 로그인하기</button>
+        <button name="google" onClick={onSocialClick}>
+          구글로 로그인하기
+        </button>
+        <button name="github" onClick={onSocialClick}>
+          깃허브로 로그인하기
+        </button>
       </div>
     </div>
   );
