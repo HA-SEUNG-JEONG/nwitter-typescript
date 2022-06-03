@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react';
 import AppRouter from 'components/AppRouter';
 import { authService } from '../fBase';
 
-export interface LoggedData {
-  isLoggedIn: boolean; //optional
-}
-
 const App: React.FunctionComponent = () => {
   const [initialized, setInitialized] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(Boolean(authService.currentUser));
