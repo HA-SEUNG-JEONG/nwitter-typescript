@@ -28,6 +28,8 @@ const Auth: React.FunctionComponent = () => {
     }
   };
 
+  const toggleAccount = () => setNewAccount((prev) => !prev);
+
   return (
     <div>
       <form onSubmit={handleSubmit(onValid)}>
@@ -45,13 +47,14 @@ const Auth: React.FunctionComponent = () => {
         {errors.email?.message}
         <input
           type="password"
-          {...register('password', { required: '비밀번호는 5자리 이상으로 해주세요.' })}
+          {...register('password', { required: '비밀번호는 6자리 이상으로 해주세요.' })}
           placeholder="password"
           required
         />
         {errors.password?.message}
-        <input type="submit" value={newAccount ? '회원가입' : '로그인'} />
+        <input type="submit" value={newAccount ? 'Sign Up' : 'Sign in'} />
       </form>
+      <span onClick={toggleAccount}>{newAccount ? 'Sign in' : 'Sign Up'}</span>
       <div>
         <button>구글로 로그인하기</button>
         <button>깃허브로 로그인하기</button>
