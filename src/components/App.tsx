@@ -2,25 +2,27 @@ import React, { useEffect, useState } from 'react';
 import AppRouter from 'components/AppRouter';
 import { authService } from '../fBase';
 
+interface userObjData {
+  [key: string]: any;
+}
+
 const App: React.FunctionComponent = () => {
   const [initialized, setInitialized] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(Boolean(authService.currentUser));
-  // console.log(authService.currentUser); //처음에는 null(비로그인 상태)
-
+  const [userObj, setUserObj] = useState<userObjData | null>(null);
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if (user) {
-        setIsLoggedIn(true);
+        setUserObj(user);
       } else {
-        setIsLoggedIn(false);
+        setUserObj(null);
       }
       setInitialized(true);
     });
   }, []);
   return (
     <>
-      {initialized ? <AppRouter isLoggedIn={isLoggedIn} /> : 'Initializing...'}
-      <footer>&copy; Twitter {new Date().getFullYear()}</footer>
+      {initialized ? <AppRouter isLoggedIn={Boolean(userObj)} userObj={userObj} /> : 'Initializing...'}
+      <footer>&copy; {new Date().getFullYear()} Hitter</footer>
     </>
   );
 };
