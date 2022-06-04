@@ -2,6 +2,7 @@ import { dbService } from 'fBase';
 import React, { useEffect, useState } from 'react';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import Tweet from 'components/Tweet';
+import { User } from 'firebase/auth';
 
 interface SnapShotData {
   id: string;
@@ -11,11 +12,8 @@ interface SnapShotData {
   text: string;
 }
 
-interface HomeProps {
-  userObj: {
-    email: string;
-    uid: string;
-  };
+export interface HomeProps {
+  userObj: User;
 }
 
 const Home = ({ userObj }: HomeProps) => {
@@ -29,6 +27,7 @@ const Home = ({ userObj }: HomeProps) => {
     // });
     const queryCollection = query(collection(dbService, 'tweets'), orderBy('createdAt', 'desc'));
     onSnapshot(queryCollection, (snapshot) => {
+      // eslint-disable-next-line
       const queryArray = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),

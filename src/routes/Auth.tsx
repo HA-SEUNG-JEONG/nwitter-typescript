@@ -41,6 +41,7 @@ const Auth: React.FunctionComponent = () => {
       provider = new fireBaseInstance.auth.GithubAuthProvider();
     }
     const data = await authService.signInWithPopup(provider);
+    console.log(data);
   };
 
   return (
