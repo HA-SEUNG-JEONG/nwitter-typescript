@@ -1,5 +1,5 @@
 import { dbService } from 'fBase';
-import React, { useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import Tweet from 'components/Tweet';
 import { User } from 'firebase/auth';
@@ -19,12 +19,10 @@ export interface HomeProps {
 const Home = ({ userObj }: HomeProps) => {
   const [tweets, setTweet] = useState('');
   const [tweetArray, setTweetArray] = useState<SnapShotData[]>([]);
+  const [attachment, setAttachment] = useState(null);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // dbService.collection('tweets').onSnapshot((snapshot) => {
-    //   const nweets = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    //   setTweetArray(nweets);
-    // });
     const queryCollection = query(collection(dbService, 'tweets'), orderBy('createdAt', 'desc'));
     onSnapshot(queryCollection, (snapshot) => {
       // eslint-disable-next-line
@@ -50,13 +48,36 @@ const Home = ({ userObj }: HomeProps) => {
     } = event;
     setTweet(value);
   };
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { files },
+    } = event;
+    if (!files) return;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent: any) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(theFile);
+  };
+
+  const onClearAttachment = () => {
+    setAttachment(null); //preview 이미지 없애기
+    fileInput.current.value = ''; //파일 이름 없애기
+  };
 
   return (
     <>
       <form onSubmit={onSubmit}>
         <input value={tweets} onChange={onChange} type="text" placeholder="Whats on you Mind" maxLength={150} />
+        <input type="file" accept="image/*" onChange={onFileChange} ref={fileInput} />
         <input type="submit" value="Tweet" />
       </form>
+      {attachment ? <img src={attachment} alt={attachment} width="40px" height="40px" /> : null}
+      <button onClick={onClearAttachment}>Clear</button>
       <div>
         {tweetArray.map((tw) => (
           <Tweet key={tw.id} tweetObj={tw} isOwner={tw.creatorId === userObj.uid} />

@@ -12,7 +12,6 @@ interface Props {
 }
 
 const Tweet = ({ tweetObj, isOwner }: Props) => {
-  console.log(tweetObj, isOwner);
   const [edit, setEdit] = useState(false);
   const [newTweet, setNewTweet] = useState(tweetObj.text);
   const onDeleteClick = () => {
