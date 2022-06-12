@@ -7,6 +7,7 @@ interface Props {
     creatorId: string;
     createdAt: number;
     text: string;
+    attachmentUrl?: string;
   };
   isOwner: boolean;
 }
@@ -52,6 +53,9 @@ const Tweet = ({ tweetObj, isOwner }: Props) => {
       ) : (
         <>
           <h4>{tweetObj.text}</h4>
+          {tweetObj.attachmentUrl && (
+            <img src={tweetObj.attachmentUrl} alt={tweetObj.attachmentUrl} width="50px" height="50px" />
+          )}
           {isOwner && (
             <>
               <button onClick={onDeleteClick}>Delete</button>

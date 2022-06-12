@@ -35,15 +35,21 @@ const Home = ({ userObj }: HomeProps) => {
   }, []);
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
-    const uploadTaskSnapshot = await fileRef.putString(attachment, 'data_url');
-    console.log(uploadTaskSnapshot);
-    /* await dbService.collection('tweets').add({
+    let attachmentUrl = '';
+    if (attachment !== '') {
+      const attachmentRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
+      const uploadTaskSnapshot = await attachmentRef.putString(attachment, 'data_url');
+      attachmentUrl = await uploadTaskSnapshot.ref.getDownloadURL();
+    }
+    const tweet = {
       text: tweets,
       createdAt: Date.now(),
       creatorId: userObj.uid,
-    });
-    setTweet(''); */
+      attachmentUrl,
+    };
+    await dbService.collection('tweets').add(tweet);
+    setTweet('');
+    setAttachment('');
   };
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
