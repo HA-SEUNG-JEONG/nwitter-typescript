@@ -1,9 +1,9 @@
-import { dbService } from 'fBase';
-import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { dbService, storageService } from 'fBase';
+import React, { useEffect, useRef, useState } from 'react';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import Tweet from 'components/Tweet';
 import { User } from 'firebase/auth';
-
+import { v4 as uuidv4 } from 'uuid';
 interface SnapShotData {
   id: string;
   creatorId: string;
@@ -20,7 +20,7 @@ const Home = ({ userObj }: HomeProps) => {
   const [tweets, setTweet] = useState('');
   const [tweetArray, setTweetArray] = useState<SnapShotData[]>([]);
   const [attachment, setAttachment] = useState(null);
-  const fileInput = useRef<HTMLInputElement>(null);
+  const fileInput = useRef<HTMLInputElement>();
 
   useEffect(() => {
     const queryCollection = query(collection(dbService, 'tweets'), orderBy('createdAt', 'desc'));
@@ -35,12 +35,15 @@ const Home = ({ userObj }: HomeProps) => {
   }, []);
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await dbService.collection('tweets').add({
+    const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
+    const uploadTaskSnapshot = await fileRef.putString(attachment, 'data_url');
+    console.log(uploadTaskSnapshot);
+    /* await dbService.collection('tweets').add({
       text: tweets,
       createdAt: Date.now(),
       creatorId: userObj.uid,
     });
-    setTweet('');
+    setTweet(''); */
   };
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
@@ -65,7 +68,7 @@ const Home = ({ userObj }: HomeProps) => {
   };
 
   const onClearAttachment = () => {
-    setAttachment(null); //preview 이미지 없애기
+    setAttachment(''); //preview 이미지 없애기
     fileInput.current.value = ''; //파일 이름 없애기
   };
 
