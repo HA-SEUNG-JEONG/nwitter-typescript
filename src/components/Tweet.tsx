@@ -1,4 +1,4 @@
-import { dbService } from 'fBase';
+import { dbService, storageService } from 'fBase';
 import React, { useState } from 'react';
 
 interface Props {
@@ -15,11 +15,14 @@ interface Props {
 const Tweet = ({ tweetObj, isOwner }: Props) => {
   const [edit, setEdit] = useState(false);
   const [newTweet, setNewTweet] = useState(tweetObj.text);
-  const onDeleteClick = () => {
+  const onDeleteClick = async () => {
     const ok = confirm('Are you sure want to delete Tweet?');
     if (ok) {
       //delete Tweet
-      dbService.doc(`tweets/${tweetObj.id}`).delete();
+      await dbService.doc(`tweets/${tweetObj.id}`).delete();
+      if (tweetObj.attachmentUrl) {
+        await storageService.refFromURL(tweetObj.attachmentUrl).delete();
+      }
     }
   };
   const toggleEdit = () => setEdit((prev) => !prev);

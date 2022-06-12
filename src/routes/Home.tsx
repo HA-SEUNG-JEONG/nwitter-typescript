@@ -50,6 +50,7 @@ const Home = ({ userObj }: HomeProps) => {
     await dbService.collection('tweets').add(tweet);
     setTweet('');
     setAttachment('');
+    fileInput.current.value = ''; //파일 첨부해서 트윗 작성 시에도 파일 이름 없애기
   };
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
