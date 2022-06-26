@@ -1,4 +1,4 @@
-import { authService } from 'fBase';
+import { authService } from '../fBase';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 

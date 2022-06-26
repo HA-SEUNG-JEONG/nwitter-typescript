@@ -1,7 +1,7 @@
-import { dbService, storageService } from 'fBase';
-import React, { useEffect, useRef, useState } from 'react';
+import { dbService, storageService } from '../fBase';
+import React, { useEffect, useState } from 'react';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import Tweet from 'components/Tweet';
+import Tweet from '../components/Tweet';
 import { User } from 'firebase/auth';
 import { v4 as uuidv4 } from 'uuid';
 interface SnapShotData {
@@ -19,8 +19,7 @@ export interface HomeProps {
 const Home = ({ userObj }: HomeProps) => {
   const [tweets, setTweet] = useState('');
   const [tweetArray, setTweetArray] = useState<SnapShotData[]>([]);
-  const [attachment, setAttachment] = useState(null);
-  const fileInput = useRef<HTMLInputElement>();
+  const [attachment, setAttachment] = useState('');
 
   useEffect(() => {
     const queryCollection = query(collection(dbService, 'tweets'), orderBy('createdAt', 'desc'));
@@ -50,7 +49,6 @@ const Home = ({ userObj }: HomeProps) => {
     await dbService.collection('tweets').add(tweet);
     setTweet('');
     setAttachment('');
-    fileInput.current.value = ''; //파일 첨부해서 트윗 작성 시에도 파일 이름 없애기
   };
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
@@ -74,16 +72,14 @@ const Home = ({ userObj }: HomeProps) => {
     reader.readAsDataURL(theFile);
   };
 
-  const onClearAttachment = () => {
-    setAttachment(''); //preview 이미지 없애기
-    fileInput.current.value = ''; //파일 이름 없애기
-  };
+  const onClearAttachment = () => setAttachment('');
+  //preview 이미지 없애기
 
   return (
     <>
       <form onSubmit={onSubmit}>
         <input value={tweets} onChange={onChange} type="text" placeholder="Whats on you Mind" maxLength={150} />
-        <input type="file" accept="image/*" onChange={onFileChange} ref={fileInput} />
+        <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Tweet" />
       </form>
       {attachment ? <img src={attachment} alt={attachment} width="40px" height="40px" /> : null}

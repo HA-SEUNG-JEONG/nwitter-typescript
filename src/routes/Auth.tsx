@@ -1,4 +1,4 @@
-import { authService, fireBaseInstance } from 'fBase';
+import { authService, fireBaseInstance } from '../fBase';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AuthProvider } from 'firebase/auth';

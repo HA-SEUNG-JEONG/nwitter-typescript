@@ -1,4 +1,4 @@
-import { dbService, storageService } from 'fBase';
+import { dbService, storageService } from '../fBase';
 import React, { useState } from 'react';
 
 interface Props {
