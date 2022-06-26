@@ -7,13 +7,13 @@ import Navigation from './Navigation';
 
 export interface LoggedData {
   isLoggedIn: boolean;
-  userObj: User;
+  userObj: any;
 }
 
 const AppRouter = ({ isLoggedIn, userObj }: LoggedData) => {
   return (
     <Router>
-      {isLoggedIn ? <Navigation /> : null}
+      {isLoggedIn ? <Navigation userObj={userObj} /> : null}
       <Switch>
         {isLoggedIn ? (
           <>
