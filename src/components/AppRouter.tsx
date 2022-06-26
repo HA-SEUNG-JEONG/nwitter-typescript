@@ -5,7 +5,7 @@ import Auth from '../routes/Auth';
 import Home from '../routes/Home';
 import Navigation from './Navigation';
 
-interface LoggedData {
+export interface LoggedData {
   isLoggedIn: boolean;
   userObj: User;
 }
@@ -21,7 +21,7 @@ const AppRouter = ({ isLoggedIn, userObj }: LoggedData) => {
               <Home userObj={userObj} />
             </Route>
             <Route exact path="/profile">
-              <Profile />
+              <Profile userObj={userObj} />
             </Route>
             <Redirect from="*" to="/" />
           </>
